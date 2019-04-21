@@ -226,7 +226,7 @@ void Controller::RewriteScore()//重绘分数
 		++bit;
 		tmp /= 10;
 	}
-	for (int i = 0; i != (bit-1); ++i)
+	for (int i = 0; i != 6-bit; ++i)
 	{
 		std::cout << " ";
 	}
@@ -336,15 +336,13 @@ int Controller::Menu()//选择菜单
 	return tmp_key;
 }
 
-
-
-int Controller::PlayGame()
+int Controller::PlayGame()//返回一个值给tmp,用于判断游戏继续，还是结束
 {
 	Snake *csnake = new Snake();
 	Food *cfood = new Food();
 	SetColor(6);
 	csnake->InitSnake();
-	srand((unsigned)time(NULL));//设置随机数种子，食物出现的位置将随机
+	//srand((unsigned)time(NULL));//设置随机数种子，食物出现的位置将随机；若无，好像也无影响
 	cfood->DrawFood(*csnake);
 
 	while (csnake->OverEdge()&&csnake->HitItself())//若蛇未撞到，循环
@@ -354,14 +352,14 @@ int Controller::PlayGame()
 			int tmp = Menu();
 			switch (tmp)
 			{
-			case 1:
+			case 1://继续游戏
 				break;
-			case 2:
+			case 2://重新开始
 				delete csnake;
 				delete cfood;
 				return 1;
 				break;
-			case 3:
+			case 3://退出游戏
 				delete csnake;
 				delete cfood;
 				return 2;
@@ -392,7 +390,18 @@ int Controller::PlayGame()
 		Sleep(speed);
 	}
 
-	
+	delete csnake;
+	delete cfood;
+	int tmp=GameOver();
+	switch (tmp)
+	{
+	case 1:
+		return 1;
+	case 2:
+		return 2;
+	default:
+		return 2;
+	}
 }
 
 void Controller::Game()//游戏一级循环
@@ -414,5 +423,109 @@ void Controller::Game()//游戏一级循环
 			break;
 		}
 		else { break; }
+	}
+}
+
+int Controller::GameOver()//游戏结束界面，返回一个值给tmp，
+{
+	Sleep(500);
+	SetColor(11);
+	SetCursorPosition(9,8);
+	std::cout << "------------------------------";
+	Sleep(30);
+	SetCursorPosition(9, 9);
+	std::cout << " |        Game Over!        | ";
+	Sleep(30);
+	SetCursorPosition(9, 10);
+	std::cout << " |                          | ";
+	Sleep(30);
+	SetCursorPosition(9, 11);
+	std::cout << " |      很遗憾！你挂了      | ";
+	Sleep(30);
+	SetCursorPosition(9, 12);
+	std::cout << " |                          | ";
+	Sleep(30);
+	SetCursorPosition(9, 13);
+	std::cout << " |  你的分数为：            | ";
+	SetCursorPosition(20, 13);
+	std::cout << score;
+	Sleep(30);
+	SetCursorPosition(9, 14);
+	std::cout << " |                          | ";
+	Sleep(30);
+	SetCursorPosition(9, 15);
+	std::cout << " |                          | ";
+	Sleep(30);
+	SetCursorPosition(9, 16);
+	std::cout << " |  是否再来一局？          | ";
+	Sleep(30);
+	SetCursorPosition(9, 17);
+	std::cout << " |                          | ";
+	Sleep(30);
+	SetCursorPosition(9, 18);
+	std::cout << " |    嗯，好的      不了    | ";
+	Sleep(30);
+	SetCursorPosition(9, 19);
+	std::cout << " |                          | ";
+	Sleep(30);
+	SetCursorPosition(9, 20);
+	std::cout << " |                          | ";
+	Sleep(30);
+	SetCursorPosition(9, 20);
+	std::cout << "------------------------------";
+
+	Sleep(100);
+	SetCursorPosition(12, 18);
+	SetBackColor();
+	std::cout << "嗯，好的";
+	int ch;
+	int tmp_key = 1;
+	bool flag = false;
+	while (ch = _getch())
+	{
+		switch (ch)
+		{
+		case 75:
+			if (tmp_key > 1)
+			{
+				SetCursorPosition(12, 18);
+				SetBackColor();
+				std::cout << "嗯，好的";
+				SetCursorPosition(19, 18);
+				SetColor(11);
+				std::cout << "不了";
+				--tmp_key;
+			}
+			break;
+		case 77:
+			if (tmp_key < 2)
+			{
+				SetCursorPosition(19, 18);
+				SetBackColor();
+				std::cout << "不了";
+				SetCursorPosition(12, 18);
+				SetColor(11);
+				std::cout << "嗯，好的";
+				++tmp_key;
+			}
+			break;
+		case 13:
+			flag = true;
+			break;
+		default:
+			break;
+		}
+		SetCursorPosition(0, 31);
+		if (flag) break;
+	}
+	SetColor(11);
+	switch (tmp_key)
+	{
+	case 1:
+		return 1;
+	case 2:
+		return 2;
+	default:
+		return 1;
 	}
 }

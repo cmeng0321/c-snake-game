@@ -10,6 +10,7 @@ public:
 	void DrawGame();
 	int PlayGame();
 	void Game();
+	int GameOver();
 	void UpdateScore(const int&);
 	void RewriteScore();
 	int Menu();
