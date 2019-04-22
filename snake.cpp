@@ -78,6 +78,16 @@ bool Snake::GetFood(const Food& cfood)
 
 bool Snake::GetBigFood(Food& cfood)
 {
+	if (snake.back().GetX() == cfood.big_x&&snake.back().GetY() == cfood.big_y)
+	{
+		cfood.big_flag = false;
+		cfood.big_x = 0;
+		cfood.big_y = 0;
+		SetCursorPosition(5, 0);
+		std::cout << "                                       ";
+		return true;
+	}
+	else
 	return false;
 }
 
